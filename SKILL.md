@@ -1,9 +1,9 @@
 ---
-name: clbs-video-script-pro
+name: clbs-youtube-script-pro
 description: 顔出しHeyGenアバター動画（VSL・ウェビナー・YouTube本編）の「企画考案から台本執筆まで」を一気通貫で行うスキル。YouTubeアルゴリズム（検索型/ブラウジング型・CTR・視聴維持率）に沿って、常識破壊フレーム＋心理トリガーで精鋭企画3案を考え抜き、企画審査5項目でセルフ採点、冒頭30秒フックを設計し、会話調・yesセット・AI構文禁止のCLBS文体で台本化する。無発音の演出タグ（[見出し：◯◯] / [スライドN] / [ピクチャーN] / [BロールN] / [カムリターン]）と HeyGen形式の沈黙マーカー <break time="0.8s" /> を配置し、そのまま clbs-youtube-edit に流せる script.txt / heygen_script.txt / media_list.yaml を出力する。「YouTube企画」「企画考えて」「バズる企画」「タイトル案」「企画から台本」「台本書いて」「HeyGen台本」「顔出し動画の台本」「pro台本」「見出しタグ付き台本」などで使用。本格的な競合リサーチは clbs-youtube-research、ショート動画台本は clbs-video-script-short、英訳は clbs-video-script-en を使う。
 ---
 
-# clbs-video-script-pro
+# clbs-youtube-script-pro
 
 顔出しアバター動画（HeyGen等）の**企画考案 → 台本執筆**を一気通貫で行い、後段の **clbs-youtube-edit**（編集スキル）にそのまま投入できる `script.txt` / `heygen_script.txt` / `media_list.yaml` を出力する。
 
