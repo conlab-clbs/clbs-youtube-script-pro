@@ -95,6 +95,7 @@ Claude Code でこのスキルを入れた状態で「YouTube企画考えて」�
 `references/` に教材一式があります：
 - `japanese_style.md` — **日本語表現ルール**（禁止フレーズ／和訳調7原則／演出比喩／直すときの原則）
 - `multi_ai_collaboration.md` — Gemini・GPT・Grok を Claude Code / Codex に参加させる考え方と手順
+- `docs/daily_research_prompt.md` — **毎日リサーチ＋ネタ出しタスクのテンプレート**（自分のジャンルに書き換えて Cowork / Claude Code の定期実行に貼る。台本の前段）
 - `example_kikaku_quantum_antenna.md` — 企画書サンプル（どの常識破壊フレーム・審査項目で設計したかの解説）
 - `example_script_quantum_antenna.txt` — 完成台本（編集スキルの練習素材と同じ）
 - `example_heygen_script.txt` / `example_media_list.yaml`
