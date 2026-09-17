@@ -109,7 +109,7 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
   <div class="meta">
     <span>対象: Claude Code（デスクトップ/CLI）・OpenAI Codex CLI</span>
     <span>OS: macOS / Windows（WSL2推奨）</span>
-    <span>更新: 2026-09-17</span>
+    <span>更新: 2026-09-17（v2.1 AI代行方式）</span>
     <span>同梱スクリプト: <a href="https://github.com/conlab-clbs/clbs-youtube-script-pro">clbs-youtube-script-pro</a> の <code>scripts/</code></span>
   </div>
 </header>
@@ -117,6 +117,7 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
 <div class="layout">
 <nav class="toc" aria-label="目次">
   <div class="eyebrow">目次</div>
+  <a href="#agent"><span class="n">0</span>AIに設定を代行させる（ここから）</a>
   <a href="#why"><span class="n">1</span>なぜ複数のAIを混ぜるのか</a>
   <a href="#routes"><span class="n">2</span>接続の3経路</a>
   <a href="#gemini"><span class="n">3</span>Gemini 3.8 Flash を参加させる</a>
@@ -125,10 +126,36 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
   <a href="#reverse"><span class="n">6</span>逆方向: Codex に Claude を参加させる</a>
   <a href="#playbook"><span class="n">7</span>相談と執筆の回し方</a>
   <a href="#trouble"><span class="n">8</span>つまずきポイント</a>
-  <a href="#setup-prompt"><span class="n">9</span>コピペ用セットアッププロンプト</a>
+  <a href="#for-ai"><span class="n">9</span>AIエージェント向け補足</a>
 </nav>
 
 <main>
+
+<h2 id="agent"><span class="num">00</span>AIに設定を代行させる（受講生はここだけ読めばよい）</h2>
+<p>この資料の設定は、自分で全部やる必要はありません。Claude Code か Codex に次のプロンプトを貼ると、AIが環境を調べ、できることは全部自分で実行し、あなたにしかできない操作だけを「次はこれをしてください」と1つずつ案内します。</p>
+<div class="prompt"><div class="lbl">Claude Code / Codex のチャットに貼る（これだけ）</div>
+<pre><code>次のAIエージェント向けガイドを読み、そこに書かれた「進め方の原則」に従って、私の環境のセットアップを代行してください。
+https://raw.githubusercontent.com/conlab-clbs/clbs-youtube-script-pro/main/docs/AI_SETUP_GUIDE.md
+
+URLを開けない場合は、先に
+  git clone https://github.com/conlab-clbs/clbs-youtube-script-pro.git ~/.claude/skills/clbs-youtube-script-pro
+を実行し（Codex の場合は配置先を ~/.codex/skills/clbs-youtube-script-pro にする）、
+その中の docs/AI_SETUP_GUIDE.md を読んで進めてください。
+
+私はターミナル操作に慣れていません。あなたが実行できることは全部あなたが実行し、
+私にしかできない操作（ブラウザでのキー発行・ログイン・アプリの再起動）だけを、
+1回に1つずつ、何をどこでやればいいか具体的に教えてください。
+私が「終わった」と言ったら確認してから次に進んでください。キーの値はチャットに貼らせないでください。</code></pre></div>
+<h3>あなたに頼まれる操作は最大4つ</h3>
+<div class="tbl"><table>
+<tr><th>お願い</th><th>どこで</th><th>必須？</th></tr>
+<tr><td>① Gemini のAPIキーを発行して、AIが用意した設定ファイルに貼る</td><td>ブラウザ（Google AI Studio）＋メモ帳</td><td>必須</td></tr>
+<tr><td>② ChatGPT でログインする（GPT を使う場合）</td><td>ブラウザ</td><td>任意・ChatGPT有料プランが必要</td></tr>
+<tr><td>③ Grok のクレジットを買ってキーを貼る（Grok を使う場合）</td><td>ブラウザ（console.x.ai）＋メモ帳</td><td>任意・数ドル</td></tr>
+<tr><td>④ Claude のアプリを Cmd+Q で完全に終了して開き直す</td><td>自分のPC</td><td>Claude Code のみ必須</td></tr>
+</table></div>
+<div class="ok"><b>準備しておくもの</b><p>Googleアカウント（Gemini用）。GPT も使うなら ChatGPT の有料プラン、Grok も使うなら クレジットカード（xAI で数ドル）。AIが「使いますか？」と聞くので、無ければ「使わない」で飛ばせます。</p></div>
+<p>以下の 1〜8 章は、AIが何をしているかを人が理解するための解説です。読まなくてもセットアップは終わります。</p>
 
 <h2 id="why"><span class="num">01</span>なぜ複数のAIを混ぜるのか</h2>
 <p>AIモデルは失敗の仕方がそれぞれ違います。Claude は判断と構成が強い代わりに、自分で出した案を自分で壊しにくい。GPT は科学的な留保が正確な代わりに、着地とタイトルの磁石を弱める。Grok は X や Web の実測で既出との衝突を暴ける代わりに、社内の実測データを持たないので「何が当たるか」の判断を誤る。Gemini 3.8 Flash は日本語の話し言葉が自然で安価な代わりに、企画の判断は任せられない。</p>
@@ -370,35 +397,19 @@ cat draft/script.txt | claude -p "この台本を、企画意図とのズレ・�
 <tr><td>スキルの <code>/</code> 一覧に出ない</td><td>配置先が違う・フォルダが入れ子・未再起動</td><td><code>~/.claude/skills/clbs-youtube-script-pro/SKILL.md</code> の位置を確認して Cmd+Q で完全再起動</td></tr>
 </table></div>
 
-<h2 id="setup-prompt"><span class="num">09</span>コピペ用セットアッププロンプト</h2>
-<p>Claude Code か Codex のチャットにそのまま貼ると、エージェントが環境を判定してスキルとスクリプトを配置し、接続確認まで行います。API キーの値だけは自分で置いてください（AI にキーを渡さない）。</p>
-<div class="prompt"><div class="lbl">Claude Code / Codex に貼る</div>
-<pre><code>次のスキルを導入し、他のAI（Gemini / GPT / Grok）との連携を確認してください。
-
-リポジトリ: https://github.com/conlab-clbs/clbs-youtube-script-pro
-
-【STEP 0 環境判定】自分が Claude Code か Codex か、OS が macOS か Windows(WSL) かを確認して報告。
-
-【STEP 1 配置】
-- Claude Code → ~/.claude/skills/clbs-youtube-script-pro/（直下に SKILL.md が来ること）
-- Codex → ~/.codex/skills/clbs-youtube-script-pro/
-- 既にあれば git pull。git が使えなければ ZIP（…/archive/refs/heads/main.zip）を展開して配置。
-
-【STEP 2 Gemini 接続確認】
-- python3 scripts/gemini_chat.py --list を実行。GEMINI_API_KEY 未設定なら、
-  「~/.config/clbs/config.toml に [gemini] api_key を書いてください」と私に案内して待つ
-  （キーの値を私に聞かない・チャットに貼らせない）。
-- 接続できたら python3 scripts/qa_script.py references/example_script_quantum_antenna.txt を実行し、
-  PASS を確認。
-
-【STEP 3 GPT（任意）】codex --version が通れば codex login status を確認。
-  Claude Code の場合は claude mcp add -s user codex -- codex mcp-server で MCP 登録。
-
-【STEP 4 Grok（任意）】XAI_API_KEY があれば python3 scripts/grok_consult.py --list を確認。
-
-【最後】3つとも「接続OK / 未設定（理由）」を表にして報告。
-  以後この環境では、台本の本文執筆と校正修正は Gemini に、企画の反論は GPT/Grok に振り、
-  企画の採否・タイトル・最終レビューはあなたが持つ、という役割で進めてください。</code></pre></div>
+<h2 id="for-ai"><span class="num">09</span>AIエージェント向け補足（この資料を読んでいるのがAIの場合）</h2>
+<p>あなたが Claude Code / Codex などのエージェントで、ユーザーからこの資料を渡されて設定を頼まれた場合は、この節と <code>docs/AI_SETUP_GUIDE.md</code>（<a href="https://raw.githubusercontent.com/conlab-clbs/clbs-youtube-script-pro/main/docs/AI_SETUP_GUIDE.md">raw</a>）の手順に従う。ユーザーはターミナル操作に慣れていない前提で動く。</p>
+<ol>
+  <li><b>自分でできることは全部自分で実行する。</b> clone、設定ファイル作成、python 実行、<code>claude mcp add</code>、検証は自分で叩く。ユーザーにコマンドを打たせない。</li>
+  <li><b>ユーザーにしかできない操作は3種類だけ。</b> ブラウザでのキー発行、ブラウザでのログイン（<code>codex login</code>）、アプリの完全再起動。</li>
+  <li><b>依頼は1回に1つ。</b> 番号を付け、「何を・どこで・終わったら何と言うか」を書く。ユーザーが終わったと言ったら、自分の検証コマンド（<code>gemini_chat.py --list</code> 等）で確認してから次を出す。</li>
+  <li><b>キーの値をチャットに貼らせない。</b> プレースホルダ入りの <code>~/.config/clbs/config.toml</code> を自分が作り、開き方を示し、ユーザーが貼って保存する。中身を表示するときはキーを伏せる。</li>
+  <li><b>任意項目（GPT / Grok）は「使うか」を先に1問で聞く。</b> 課金操作（クレジット購入・プラン契約）は自分でやらない。</li>
+  <li><b>エラーは自分で読んで直す。</b> 3回で解決しなければ症状と試したことを3行で報告する。</li>
+  <li><b>進捗は各ステップの終わりに1行</b>（「✅ STEP n 完了 ／ 次: 〜」）。最後に、スキル配置・Gemini・GPT・Grok・役割分担ファイルの5行の表を出す。</li>
+  <li><b>順序:</b> 環境判定 → スキル配置 → Gemini（必須）→ GPT（任意）→ Grok（任意）→ 役割分担を <code>CLAUDE.md</code> / <code>AGENTS.md</code> に書く → Claude Code なら再起動を最後に1回だけ依頼。</li>
+</ol>
+<p>設定が終わったあとの運用ルールは、このスキルの <code>SKILL.md</code> フェーズ7 と <code>references/multi_ai_collaboration.md</code> にある。本文は Gemini に書かせ、企画の採否・タイトル・最終レビューはあなたが持つ。</p>
 
 <h3>同梱ファイル</h3>
 <div class="tbl"><table>
@@ -410,6 +421,7 @@ cat draft/script.txt | claude -p "この台本を、企画意図とのズレ・�
 <tr><td><code>scripts/grok_consult.py</code></td><td>Grok に相談・X/Web 実測リサーチ</td><td>XAI_API_KEY</td></tr>
 <tr><td><code>references/japanese_style.md</code></td><td>日本語表現ルール（Gemini の --system にも使う）</td><td>—</td></tr>
 <tr><td><code>references/multi_ai_collaboration.md</code></td><td>この資料の要点版（スキルが参照する）</td><td>—</td></tr>
+<tr><td><code>docs/AI_SETUP_GUIDE.md</code></td><td>AIエージェントがセットアップを代行するための手順書（受講生は00章のプロンプトを貼るだけ）</td><td>—</td></tr>
 </table></div>
 
 <footer>AI×超集客法 ワークショップ配布資料 · clbs-youtube-script-pro v2.0 · 2026-09-17。スクリプトは MIT ライセンス。各AIの料金・モデル名は変わるので、公式の料金表で最新を確認してください。</footer>

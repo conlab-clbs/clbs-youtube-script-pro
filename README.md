@@ -48,7 +48,28 @@ YouTubeアルゴリズム（検索型/ブラウジング型・CTR・視聴維持
 
 いずれもフォルダ直下に `SKILL.md` が来るように配置してください。同梱スクリプトは Python 3.11 以上の標準ライブラリだけで動きます（pip 不要）。Gemini / Grok を使う経路だけ API キーが要ります（後述）。
 
-### インストール
+### インストール（受講生向け・AIに代行させる）
+
+Claude Code か Codex のチャットに次を貼るだけです。AIが環境を調べて配置と接続確認を自分で行い、あなたにしかできない操作（ブラウザでのキー発行・ログイン・アプリ再起動）だけを1つずつ案内します。
+
+```
+次のAIエージェント向けガイドを読み、そこに書かれた「進め方の原則」に従って、私の環境のセットアップを代行してください。
+https://raw.githubusercontent.com/conlab-clbs/clbs-youtube-script-pro/main/docs/AI_SETUP_GUIDE.md
+
+URLを開けない場合は、先に
+  git clone https://github.com/conlab-clbs/clbs-youtube-script-pro.git ~/.claude/skills/clbs-youtube-script-pro
+を実行し（Codex の場合は配置先を ~/.codex/skills/clbs-youtube-script-pro にする）、
+その中の docs/AI_SETUP_GUIDE.md を読んで進めてください。
+
+私はターミナル操作に慣れていません。あなたが実行できることは全部あなたが実行し、
+私にしかできない操作（ブラウザでのキー発行・ログイン・アプリの再起動）だけを、
+1回に1つずつ、何をどこでやればいいか具体的に教えてください。
+私が「終わった」と言ったら確認してから次に進んでください。キーの値はチャットに貼らせないでください。
+```
+
+AIが従う手順書は [`docs/AI_SETUP_GUIDE.md`](docs/AI_SETUP_GUIDE.md) です。
+
+### インストール（自分で行う場合）
 
 ```bash
 git clone https://github.com/conlab-clbs/clbs-youtube-script-pro.git ~/.claude/skills/clbs-youtube-script-pro
