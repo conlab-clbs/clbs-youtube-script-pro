@@ -6,3 +6,7 @@ videos/
 *.mp4
 *.m4a
 *.wav
+
+# Python
+__pycache__/
+*.pyc
