@@ -1,0 +1,432 @@
+<title>マルチAI台本制作ガイド</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=BIZ+UDPGothic:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --paper:#F4F6F9; --surface:#FFFFFF; --ink:#1A2130; --ink-2:#4A5568; --ink-3:#7A8699;
+  --line:#D9DFE8; --line-2:#E9EDF3; --accent:#24408E; --accent-ink:#FFFFFF; --accent-soft:#E6ECFA;
+  --code-bg:#1C2333; --code-ink:#E6EBF5; --code-cmt:#8B97AD;
+  --claude:#2F3A4C; --gemini:#0F8B7C; --gpt:#5A4FCF; --grok:#C4780F;
+  --claude-soft:#E9ECF1; --gemini-soft:#DFF3F0; --gpt-soft:#E9E6FB; --grok-soft:#FBEEDB;
+  --warn-bg:#FFF6E5; --warn-line:#E4B25C; --ok-bg:#E8F6EF; --ok-line:#5DB388;
+  --shadow:0 1px 2px rgba(20,30,50,.06),0 8px 24px -12px rgba(20,30,50,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#10141C; --surface:#171C26; --ink:#E7EBF2; --ink-2:#B4BDCB; --ink-3:#8590A3;
+    --line:#2A3242; --line-2:#222A38; --accent:#8FA8F2; --accent-ink:#0F1524; --accent-soft:#1E2740;
+    --code-bg:#0B0F16; --code-ink:#E6EBF5; --code-cmt:#7D8AA3;
+    --claude:#C9D1DE; --gemini:#3FC9B7; --gpt:#A79CF6; --grok:#F0A93A;
+    --claude-soft:#1F2735; --gemini-soft:#123330; --gpt-soft:#241F45; --grok-soft:#3A2A10;
+    --warn-bg:#2E2412; --warn-line:#B98A2E; --ok-bg:#122A1F; --ok-line:#3E8F66;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#10141C; --surface:#171C26; --ink:#E7EBF2; --ink-2:#B4BDCB; --ink-3:#8590A3;
+  --line:#2A3242; --line-2:#222A38; --accent:#8FA8F2; --accent-ink:#0F1524; --accent-soft:#1E2740;
+  --code-bg:#0B0F16; --code-ink:#E6EBF5; --code-cmt:#7D8AA3;
+  --claude:#C9D1DE; --gemini:#3FC9B7; --gpt:#A79CF6; --grok:#F0A93A;
+  --claude-soft:#1F2735; --gemini-soft:#123330; --gpt-soft:#241F45; --grok-soft:#3A2A10;
+  --warn-bg:#2E2412; --warn-line:#B98A2E; --ok-bg:#122A1F; --ok-line:#3E8F66;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"BIZ UDPGothic","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;font-size:16px;line-height:1.85;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding-block:0 96px;padding-inline:16px}
+h1,h2,h3,h4{font-family:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif;text-wrap:balance;line-height:1.3;margin:0}
+h1{font-size:clamp(28px,4.2vw,44px);font-weight:900;letter-spacing:-.01em}
+h2{font-size:clamp(22px,2.6vw,28px);font-weight:700;margin-top:64px;padding-top:24px;border-top:2px solid var(--ink);display:flex;gap:14px;align-items:baseline}
+h2 .num{font-family:"JetBrains Mono",monospace;font-size:.8em;color:var(--accent);font-weight:600;letter-spacing:.04em}
+h3{font-size:19px;font-weight:700;margin-top:36px;padding-left:12px;border-left:4px solid var(--accent)}
+h4{font-size:16px;font-weight:700;margin-top:24px;color:var(--ink)}
+p{margin:12px 0;max-width:70ch}
+a{color:var(--accent)}
+code{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.88em;background:var(--accent-soft);padding:.1em .4em;border-radius:4px}
+pre{position:relative;background:var(--code-bg);color:var(--code-ink);padding:18px 20px;border-radius:8px;overflow-x:auto;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:13.5px;line-height:1.7;margin:14px 0}
+pre code{background:none;padding:0;font-size:inherit;color:inherit}
+pre .c{color:var(--code-cmt)}
+pre .copy{position:absolute;top:8px;right:8px;font:600 11px/1 "JetBrains Mono",monospace;letter-spacing:.06em;background:rgba(255,255,255,.08);color:var(--code-ink);border:1px solid rgba(255,255,255,.18);border-radius:4px;padding:6px 9px;cursor:pointer}
+pre .copy:hover,pre .copy:focus-visible{background:rgba(255,255,255,.18);outline:none}
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+header.hero{padding-block:56px 32px;border-bottom:1px solid var(--line)}
+.hero .lede{font-size:18px;color:var(--ink-2);max-width:62ch;margin-top:18px}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:22px;font-size:13px;color:var(--ink-3)}
+.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:48px;align-items:start}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);font-size:13.5px;line-height:1.6;padding-top:28px}
+nav.toc .eyebrow{margin-bottom:10px}
+nav.toc a{display:block;color:var(--ink-2);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid var(--line)}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent);outline:none}
+nav.toc a .n{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);margin-right:6px}
+main{min-width:0}
+@media (max-width:860px){.layout{grid-template-columns:1fr;gap:0}nav.toc{position:static;padding:20px 0 0;border-bottom:1px solid var(--line);margin-bottom:8px}nav.toc a{display:inline-block;border-left:0;padding:4px 10px 4px 0}}
+/* role cards */
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:22px 0}
+.role{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 16px;box-shadow:var(--shadow);border-top:5px solid var(--ink)}
+.role.claude{border-top-color:var(--claude)}.role.gemini{border-top-color:var(--gemini)}.role.gpt{border-top-color:var(--gpt)}.role.grok{border-top-color:var(--grok)}
+.role .who{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;font-size:18px}
+.role .job{font-size:13px;color:var(--ink-3);margin-top:2px}
+.role p{font-size:14px;margin:10px 0 0;color:var(--ink-2)}
+.role .no{font-size:13px;margin-top:10px;padding-top:8px;border-top:1px dashed var(--line)}
+.role .no b{color:var(--ink)}
+.tag{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;padding:2px 8px;border-radius:999px;font-weight:600}
+.tag.claude{background:var(--claude-soft);color:var(--claude)}.tag.gemini{background:var(--gemini-soft);color:var(--gemini)}.tag.gpt{background:var(--gpt-soft);color:var(--gpt)}.tag.grok{background:var(--grok-soft);color:var(--grok)}
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:20px 0;counter-reset:step}
+.flow .step{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 14px 12px;position:relative;font-size:14px}
+.flow .step::before{counter-increment:step;content:counter(step);font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-3);display:block;margin-bottom:4px}
+.flow .step b{display:block;font-family:"Zen Kaku Gothic New",sans-serif;font-size:15px;margin-bottom:4px}
+.flow .step .by{font-size:12px;margin-top:6px}
+/* tables */
+.tbl{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{padding:10px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line-2)}
+th{font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:13px;color:var(--ink-2);background:var(--paper)}
+tr:last-child td{border-bottom:0}
+td code{white-space:nowrap}
+/* callouts */
+.note,.warn,.ok{border-radius:8px;padding:14px 18px;margin:16px 0;font-size:14.5px;border:1px solid var(--line);background:var(--surface)}
+.note{border-left:4px solid var(--accent)}
+.warn{background:var(--warn-bg);border-color:var(--warn-line);border-left-width:4px}
+.ok{background:var(--ok-bg);border-color:var(--ok-line);border-left-width:4px}
+.note b,.warn b,.ok b{font-family:"Zen Kaku Gothic New",sans-serif}
+.note p,.warn p,.ok p{margin:4px 0}
+ul,ol{padding-left:1.4em;max-width:70ch}li{margin:4px 0}
+.prompt{background:var(--surface);border:1px dashed var(--accent);border-radius:8px;padding:4px 0 0;margin:14px 0}
+.prompt .lbl{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;color:var(--accent);padding:6px 16px 0}
+.prompt pre{margin:8px 0 0;border-radius:0 0 8px 8px;background:var(--code-bg)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:14px;margin:12px 0}
+.kv dt{font-weight:700;color:var(--ink-2);font-family:"Zen Kaku Gothic New",sans-serif}
+.kv dd{margin:0}
+footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
+@media (prefers-reduced-motion:no-preference){pre .copy{transition:background .15s}}
+</style>
+
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">AI×超集客法 ワークショップ配布資料</div>
+  <h1>Claude Code / Codex に Gemini・GPT・Grok を参加させる</h1>
+  <p class="lede">ひとつのAIに全部やらせるのをやめ、工程ごとに得意なAIへ振る。Takumi量子論チャンネルの台本制作で毎週回している体制を、そのまま自分の環境で再現するための手順書です。</p>
+  <div class="meta">
+    <span>対象: Claude Code（デスクトップ/CLI）・OpenAI Codex CLI</span>
+    <span>OS: macOS / Windows（WSL2推奨）</span>
+    <span>更新: 2026-09-17</span>
+    <span>同梱スクリプト: <a href="https://github.com/conlab-clbs/clbs-youtube-script-pro">clbs-youtube-script-pro</a> の <code>scripts/</code></span>
+  </div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="目次">
+  <div class="eyebrow">目次</div>
+  <a href="#why"><span class="n">1</span>なぜ複数のAIを混ぜるのか</a>
+  <a href="#routes"><span class="n">2</span>接続の3経路</a>
+  <a href="#gemini"><span class="n">3</span>Gemini 3.8 Flash を参加させる</a>
+  <a href="#gpt"><span class="n">4</span>GPT を参加させる</a>
+  <a href="#grok"><span class="n">5</span>Grok を参加させる</a>
+  <a href="#reverse"><span class="n">6</span>逆方向: Codex に Claude を参加させる</a>
+  <a href="#playbook"><span class="n">7</span>相談と執筆の回し方</a>
+  <a href="#trouble"><span class="n">8</span>つまずきポイント</a>
+  <a href="#setup-prompt"><span class="n">9</span>コピペ用セットアッププロンプト</a>
+</nav>
+
+<main>
+
+<h2 id="why"><span class="num">01</span>なぜ複数のAIを混ぜるのか</h2>
+<p>AIモデルは失敗の仕方がそれぞれ違います。Claude は判断と構成が強い代わりに、自分で出した案を自分で壊しにくい。GPT は科学的な留保が正確な代わりに、着地とタイトルの磁石を弱める。Grok は X や Web の実測で既出との衝突を暴ける代わりに、社内の実測データを持たないので「何が当たるか」の判断を誤る。Gemini 3.8 Flash は日本語の話し言葉が自然で安価な代わりに、企画の判断は任せられない。</p>
+<p>だから「ディレクター1人＋専門家3人」の体制にします。ディレクターは Claude Code（または Codex）上のメインモデルで、企画の採否・言い切りの強さ・タイトル・最終レビューという判断を持ちます。専門家には作業を渡し、結論は渡しません。</p>
+
+<div class="roles">
+  <div class="role claude">
+    <div class="who">ディレクター</div>
+    <div class="job">Claude Code / Codex のメインモデル</div>
+    <p>ヒアリング、企画の採否、構成、章ブリーフ、最終レビュー。他AIの出力を突合して決定メモを書く。</p>
+    <div class="no"><b>渡さない:</b> 判断そのもの。他AIの結論をそのまま採用しない</div>
+  </div>
+  <div class="role gemini">
+    <div class="who">Gemini 3.8 Flash</div>
+    <div class="job">日本語本文の執筆・言い換え・校正修正</div>
+    <p>章ブリーフから本文を書く。校正ツールが指摘した文だけを直す。同じブリーフで比べたとき、素の出力がいちばん自然だった。</p>
+    <div class="no"><b>渡さない:</b> 企画の判断、文長や語尾の数値縛り（付けると不自然になる）</div>
+  </div>
+  <div class="role gpt">
+    <div class="who">GPT</div>
+    <div class="job">科学的射程・論理の穴・一次資料</div>
+    <p>企画案の言い過ぎを検出し、既存動画への波及まで拾う。反証耐性の確認役。ChatGPT サブスク枠で動くので API 課金なし。</p>
+    <div class="no"><b>渡さない:</b> タイトルと着地（磁石が弱くなる）。1応答5〜8分かかる前提で使う</div>
+  </div>
+  <div class="role grok">
+    <div class="who">Grok</div>
+    <div class="job">市場の飽和度・X/Web のリアルタイム実測</div>
+    <p>「そのテーマは既に何本出ているか」「視聴者はどう反応しているか」を X 投稿と Web で実測し、容赦なく反論する。</p>
+    <div class="no"><b>渡さない:</b> 勝ち型の判断。出してきた再生数は自分の実測と突合してから使う</div>
+  </div>
+</div>
+
+<h3>台本1本の流れ</h3>
+<div class="flow">
+  <div class="step"><b>ブリーフ</b>企画案とチャンネル前提を1枚に<div class="by"><span class="tag claude">ディレクター</span></div></div>
+  <div class="step"><b>R1 並列相談</b>同じブリーフを両者へ同時に<div class="by"><span class="tag gpt">GPT</span> <span class="tag grok">Grok</span></div></div>
+  <div class="step"><b>決定メモ v1</b>採用／部分採用／不採用を突合<div class="by"><span class="tag claude">ディレクター</span></div></div>
+  <div class="step"><b>R2 叩かせる</b>決定メモを両者に返して壊させる<div class="by"><span class="tag gpt">GPT</span> <span class="tag grok">Grok</span></div></div>
+  <div class="step"><b>章ブリーフ→本文</b>章ごとに執筆<div class="by"><span class="tag gemini">Gemini</span></div></div>
+  <div class="step"><b>校正ゲート</b>qa_script.py → 該当文だけ修正<div class="by"><span class="tag gemini">Gemini</span></div></div>
+  <div class="step"><b>最終レビュー</b>企画とのズレ・フック・対比の復元<div class="by"><span class="tag claude">ディレクター</span></div></div>
+</div>
+<div class="note"><b>実例</b><p>ある企画では、ディレクター×GPT が2ラウンドかけて決めた構成を、R2 で Grok が X の実測込みで崩しました。「空白なのは実験名、飽和しているのは結論」という分離と、論理の内部矛盾を1つずつ新たに出した。3者の失敗の仕方が違うから、この形が効きます。</p></div>
+
+<h2 id="routes"><span class="num">02</span>接続の3経路</h2>
+<p>他のAIを「参加させる」と言っても、やることは3つのどれかです。どの経路でも、ディレクター側は「スクリプトを叩いて、結果ファイルを読む」だけなので、Claude Code と Codex で手順は同じになります。</p>
+<div class="tbl"><table>
+<tr><th>経路</th><th>仕組み</th><th>向いている相手</th><th>準備</th></tr>
+<tr><td><b>A. API を直接叩く</b></td><td>Python の標準ライブラリだけで HTTP を投げる。同梱の <code>gemini_chat.py</code> / <code>grok_consult.py</code> がこれ</td><td>Gemini・Grok</td><td>API キーを1つ発行して環境変数に置く</td></tr>
+<tr><td><b>B. CLI を呼ぶ</b></td><td>相手のコマンドラインツールをサブプロセスで起動し、標準入力でプロンプトを渡す。<code>gpt_consult.py</code> がこれ</td><td>GPT（Codex CLI）・Claude（claude CLI）</td><td>CLI をインストールしてログイン。API キー不要</td></tr>
+<tr><td><b>C. MCP で登録する</b></td><td>相手を MCP サーバーとして登録し、ディレクターが「ツール」として直接呼ぶ</td><td>GPT（<code>codex mcp-server</code>）</td><td>1行の登録コマンド。ツール一覧に出る</td></tr>
+</table></div>
+<p>迷ったら A と B で十分です。C は「Claude が自分の判断で GPT を呼びに行く」動きが欲しいときに足します。</p>
+
+<h2 id="gemini"><span class="num">03</span>Gemini 3.8 Flash を参加させる</h2>
+<p>本命です。日本語の本文執筆と校正修正を Gemini に任せると、Claude 側は判断とレビューに集中でき、従量課金も下がります。</p>
+
+<h3>3-1. API キーを発行する</h3>
+<ol>
+  <li><a href="https://aistudio.google.com/">Google AI Studio</a> を Google アカウントで開き、左下の <b>Get API key</b> → <b>Create API key</b>。</li>
+  <li>キーは <code>AIza…</code> で始まる文字列。発行直後にコピーして、パスワードマネージャーに控えます。</li>
+  <li>Billing で前払いクレジットをチャージします。残高が 0 になるとどのモデルも <code>429 prepayment credits are depleted</code> で止まるので、最初に少額を入れておきます。</li>
+</ol>
+
+<h3>3-2. キーを置く</h3>
+<p>同梱スクリプトは <b>環境変数 → 設定ファイル</b> の順で読みます。どちらか片方でかまいません。</p>
+<pre><code><span class="c"># 方法1: シェルの環境変数（~/.zshrc に追記）</span>
+export GEMINI_API_KEY="AIza..."
+
+<span class="c"># 方法2: 設定ファイル（~/.config/clbs/config.toml）</span>
+mkdir -p ~/.config/clbs
+cat &gt; ~/.config/clbs/config.toml &lt;&lt;'EOF'
+[gemini]
+api_key = "AIza..."
+EOF</code></pre>
+<p>Claude Code で常時使うなら、<code>~/.claude/settings.json</code> の <code>env</code> に入れておくとセッションごとの設定が不要です。</p>
+<pre><code>{ "env": { "GEMINI_API_KEY": "AIza..." } }</code></pre>
+<div class="warn"><b>キーの扱い</b><p>キーはチャットに貼らない。Git にコミットしない（<code>~/.config/clbs/</code> はリポジトリの外）。AI に「キーを設定して」と頼むときも、AI に値を渡さず自分でファイルに書きます。</p></div>
+
+<h3>3-3. 動作確認</h3>
+<pre><code><span class="c"># スキルを入れていれば scripts/ にある（Codex は ~/.codex/skills/…）</span>
+cd ~/.claude/skills/clbs-youtube-script-pro
+python3 scripts/gemini_chat.py --list | grep 3.8       <span class="c"># gemini-3.8-flash が出ればOK</span>
+python3 scripts/gemini_chat.py -p "「今日は天気がいいですね」を友達に話す口調で1文に。答えだけ"
+<span class="c"># → 今日いい天気だね！   [tokens] in=28 out=6 model=gemini-3.8-flash</span></code></pre>
+<p>これで接続は完了です。<code>gemini_chat.py</code> は 90 行ほどの Python で、追加インストールは要りません。</p>
+
+<h3>3-4. Claude Code に「Gemini に書かせろ」と指示する</h3>
+<p>スキル（clbs-youtube-script-pro v2）には既に「本文執筆と校正修正は Gemini に振れる」手順が入っています。あとはチャットで役割を宣言するだけです。</p>
+<div class="prompt"><div class="lbl">Claude Code に貼る</div>
+<pre><code>この台本プロジェクトでは役割を分けます。
+- あなた（Claude）: ヒアリング、企画3案、構成、章ごとのブリーフ作成、最終レビュー
+- Gemini 3.8 Flash: 本文の執筆と、校正ツールが指摘した文の修正
+  （scripts/gemini_chat.py と scripts/ja_style_fix.py を使う。GEMINI_API_KEY は設定済み）
+
+章ブリーフには、企画・語り手・章の位置・使う素材と順序・断定ライン・タグ形式・
+「1行1文」を書き、文長や語尾の数値縛りは入れないでください。
+Gemini の出力は scripts/qa_script.py で検査し、FAIL は ja_style_fix.py で該当文だけ直し、
+--strict で PASS してから私に見せてください。</code></pre></div>
+<p>ブリーフを Gemini に渡すコマンドは次の形です。システム指示に文体ルール（<code>references/japanese_style.md</code>）を渡すのがコツで、これを付けるだけで「AIっぽい前置き」と「和訳調」がかなり減ります。</p>
+<pre><code>python3 scripts/gemini_chat.py -f briefs/ch3.md \
+  --system references/japanese_style.md -o draft/ch3.txt</code></pre>
+
+<h3>3-5. 校正ゲートと修正パス</h3>
+<p>書けた本文は機械検査に通します。禁止フレーズ（「結論から言うと」など）、許可取り（「〜させてください」）、AI記号（<code>**</code>・<code>——</code>）、英文和訳調（受け身で行為者を隠す／名詞化／冗長な強調／「〜ですね」で言い切りを弱める）、演出比喩、タグ規約違反を拾います。</p>
+<pre><code><span class="c"># 検査（FAIL があると exit 1。--strict で和訳調も FAIL 扱い）</span>
+python3 scripts/qa_script.py videos/20260917_xxx/ --strict
+
+<span class="c"># 指摘された文だけ Gemini に直させて元の位置に戻す（タグ・break は不変）</span>
+python3 scripts/ja_style_fix.py videos/20260917_xxx/script.txt --strict
+<span class="c"># 修正前: FAIL 4 / WARN 1  文数 9  対象 9文
+# 修正後: PASS FAIL 0 / WARN 0  差し替え 9文  タグ/break保持 OK</span></code></pre>
+<div class="ok"><b>直す単位は文</b><p><code>ja_style_fix.py</code> は指摘された文だけを番号付きで送り、直した文を JSON で受け取って差し戻します。全文の書き直しをさせないので、事実や構成が勝手に変わりません。修正前のファイルは <code>.bak_日時</code> に残ります。</p></div>
+<div class="warn"><b>機械が消したがるもの</b><p>「Aではなく、実はB」の常識破壊の対比や、「〜かもしれません」の誠実な留保は、校正ツールが消したがります。直すか残すかはディレクターが判断し、消えていたら戻してください。</p></div>
+
+<h3>3-6. Codex から使う</h3>
+<p>Codex でも同じスクリプトを叩くだけです。毎回説明しなくて済むように、プロジェクト直下の <code>AGENTS.md</code> に役割を書いておきます（Codex は起動時にこれを自動で読みます）。</p>
+<pre><code><span class="c"># AGENTS.md（プロジェクト直下）</span>
+## 台本制作の役割分担
+- 本文の執筆・校正修正は Gemini 3.8 Flash に任せる:
+  ~/.codex/skills/clbs-youtube-script-pro/scripts/gemini_chat.py
+  ~/.codex/skills/clbs-youtube-script-pro/scripts/ja_style_fix.py
+- 納品前に scripts/qa_script.py &lt;project&gt; --strict が PASS であること</code></pre>
+
+<h3>3-7. コストと落とし穴</h3>
+<dl class="kv">
+  <dt>コスト</dt><dd>Flash 系は安価です。校正パス1回（60文まとめて送信）で入力約2,000トークン・出力約150トークン。台本1本の執筆＋校正で数十円のオーダーになります。</dd>
+  <dt>数値縛りを付けない</dt><dd>「1文30字以内」「〜んです は5文に1回」のような制約をブリーフに入れると不自然になります（同一ブリーフ比較で本人判断済み）。文体は <code>--system</code> のルールで寄せ、数値では縛らない。</dd>
+  <dt>タグを壊さない</dt><dd>章ごとに書き直させるときは、演出タグの行数と順序が元と一致するか必ず検証します。<code>ja_style_fix.py</code> はタグと break を触らない設計なので、この問題が出ません。</dd>
+  <dt>モデル名</dt><dd><code>gemini-3.8-flash</code>。名前が違うと 404 になるので <code>--list</code> で確認。</dd>
+</dl>
+
+<h2 id="gpt"><span class="num">04</span>GPT を参加させる（Codex CLI 経由・API課金なし）</h2>
+<p>ChatGPT の有料プラン（Plus / Pro / Business）があれば、Codex CLI を通して GPT を呼べます。API キーは要らず、サブスクの枠内で動きます。</p>
+
+<h3>4-1. Codex CLI を入れてログイン</h3>
+<pre><code>brew install --cask codex          <span class="c"># Windows は WSL2 上で npm install -g @openai/codex</span>
+codex login                        <span class="c"># ブラウザが開くので ChatGPT でログイン</span>
+codex login status                 <span class="c"># "Logged in using ChatGPT" が出ればOK</span></code></pre>
+
+<h3>4-2. 経路B: スクリプトから呼ぶ（相談用・おすすめ）</h3>
+<p>プロンプトを標準入力で渡し、応答を Markdown で保存します。<code>reply</code> で同じセッションを続けられるので、R1 → R2 の多ターン相談ができます。</p>
+<pre><code>cd ~/.claude/skills/clbs-youtube-script-pro
+python3 scripts/gpt_consult.py ask   --out _gen/gpt --name plan -f brief.md --model gpt-6-astra
+python3 scripts/gpt_consult.py reply --out _gen/gpt --name plan -f decision_v1.md
+<span class="c"># → _gen/gpt/plan_r1.md, plan_r2.md（応答）/ plan_prompt_rN.md（送った質問）</span></code></pre>
+<div class="warn"><b>プロンプトは必ず標準入力から</b><p><code>codex exec "長いプロンプト"</code> と引数で渡すと「Reading additional input from stdin」で止まります。スクリプトは <code>-</code> を付けて stdin から渡しています。手で叩くときも <code>codex exec --model gpt-6-astra - &lt; prompt.md</code> の形にします。</p></div>
+<p>利用できるモデル名はプランで変わります。<code>--model</code> を省くと <code>~/.codex/config.toml</code> の既定モデルが使われるので、まずは省略で試してください。</p>
+
+<h3>4-3. 経路C: MCP として Claude Code に登録する</h3>
+<p>Claude が「ツール」として GPT を直接呼べるようにします。Claude が自分の判断で Codex に実装を委譲する、といった使い方が可能になります。</p>
+<pre><code>claude mcp add -s user codex -- codex mcp-server
+claude mcp list        <span class="c"># codex: codex mcp-server - ✓ Connected</span></code></pre>
+<p>Claude デスクトップアプリで <code>/mcp</code> に出ないときは、<code>~/Library/Application Support/Claude/claude_desktop_config.json</code> に直接書く方法もあります。</p>
+<pre><code>{ "mcpServers": { "codex": { "command": "/opt/homebrew/bin/codex", "args": ["mcp-server"] } } }</code></pre>
+<p>登録後は Claude に「codex ツールで GPT に反論させて」と言えば呼び出せます。モデルを指定したいときは <code>model: "gpt-6-astra"</code> のようにツール引数で渡します。</p>
+<div class="warn"><b>brew で Codex を更新したら Claude Code を再起動</b><p><code>codex mcp-server</code> のプロセスは起動時のバイナリを掴み続けます。更新後にセッションを再起動しないと「requires a newer version」の 400 エラーになります。</p></div>
+
+<h3>4-4. GPT に何を聞くか</h3>
+<ul>
+  <li>企画案の主張で「言い過ぎ」になっている箇所と、一次資料に基づく言える上限</li>
+  <li>この構成に対する、物理学者・専門家・懐疑派からの未解消の反論と、台本内で先回りする応答方針</li>
+  <li>既に公開している動画との矛盾（波及の検出）</li>
+</ul>
+<p>タイトルや着地は聞かない。GPT は留保を付けて弱める方向に寄るので、そこはディレクターが決めます。</p>
+
+<h2 id="grok"><span class="num">05</span>Grok を参加させる（xAI API）</h2>
+<p>Grok の強みは X 投稿と Web をその場で検索して、引用 URL 付きで返すことです。企画の「既出との衝突」「視聴者の生の反応」を実測する役に使います。X Premium のサブスクと API 課金は別建てで、API は <a href="https://console.x.ai/">console.x.ai</a> でクレジットを買って使います。</p>
+
+<h3>5-1. キーを発行して置く</h3>
+<pre><code><span class="c"># console.x.ai → API Keys → Create（先にクレジットを購入）</span>
+export XAI_API_KEY="xai-..."
+<span class="c"># または ~/.config/clbs/config.toml に [xai] api_key = "xai-..."</span>
+python3 scripts/grok_consult.py --list      <span class="c"># grok-4.6 などが出ればOK</span></code></pre>
+
+<h3>5-2. 相談とリサーチ</h3>
+<pre><code><span class="c"># 企画相談（検索なし）。reply で同じセッションを継続</span>
+python3 scripts/grok_consult.py ask   --out _gen/grok --name plan -f brief.md
+python3 scripts/grok_consult.py reply --out _gen/grok --name plan -f decision_v1.md
+
+<span class="c"># X + Web を検索して実測（引用URL付き）</span>
+python3 scripts/grok_consult.py research --out _gen/grok --name market \
+  -f query.md --search both --from-date 2026-08-01
+<span class="c"># → _gen/grok/market_r1.md の末尾に「## 引用」としてURL一覧</span></code></pre>
+<dl class="kv">
+  <dt>reasoning は medium</dt><dd>既定の high だと推論が出力予算を食い、「以下に整理します」と予告だけで終わることがあります。スクリプトは medium を既定にし、本文が短いときは同じセッションで続きを書かせます。</dd>
+  <dt>R2 は reply で</dt><dd>文脈を <code>ask</code> に貼り直すと入力が20万トークンを超えて単価が2倍になります。</dd>
+  <dt>コスト</dt><dd>実測で、X検索8回のリサーチ1回が約 $0.16、続きを書かせる reply が約 $0.06。結果ファイルの末尾に実費が出ます。</dd>
+  <dt>ブリーフに入れる一文</dt><dd>「褒めなくていい。反対と穴の指摘に字数を使え」。これが無いと当たり障りのない要約が返ってきます。</dd>
+</dl>
+<div class="warn"><b>Grok の数字は突合してから使う</b><p>Grok が返す再生数や市場データは Web 検索由来です。企画判断に使う前に、自分のチャンネルの実測（yt-dlp や YouTube Studio）と突き合わせます。Grok は社内実測を持たないので、「そのタイトルはクリック詐欺」と評価した企画が実際は過去最高ペースだった、ということが起きます。</p></div>
+
+<h2 id="reverse"><span class="num">06</span>逆方向: Codex に Claude を参加させる</h2>
+<p>ディレクターを Codex にする場合も、考え方は同じです。Claude Code の CLI は <code>claude -p "プロンプト"</code> で1回だけ応答を返す非対話モードがあるので、Codex からサブプロセスで呼べます。</p>
+<pre><code><span class="c"># Codex（または任意のスクリプト）から Claude にレビューを頼む例</span>
+cat draft/script.txt | claude -p "この台本を、企画意図とのズレ・冒頭30秒の4点セット・言い過ぎの3点でレビューして。修正案は該当文だけ" &gt; _gen/claude_review.md</code></pre>
+<p>Codex 側の <code>AGENTS.md</code> に「最終レビューは claude -p に投げる」と書いておけば、毎回指示しなくても回ります。Gemini・Grok のスクリプトは Codex からもそのまま使えます。</p>
+
+<h2 id="playbook"><span class="num">07</span>相談と執筆の回し方</h2>
+<h3>企画段階（GPT × Grok × ディレクター）</h3>
+<ol>
+  <li>ディレクターが共通ブリーフを1本書く。企画案・チャンネル前提・聞きたいこと。<b>数値の転記ミスに注意</b>（221k を「221万」と書いた事故で相手の分析が丸ごとズレた）。</li>
+  <li>R1: 同じブリーフを GPT と Grok に <b>並列</b> で投入する。片方の結論を見せてから聞くと引きずられます。</li>
+  <li>ディレクターが両者を突合し、決定メモ v1（採用／部分採用／不採用／本人判断が必要）を書く。</li>
+  <li>R2: 決定メモ v1 を両者に <code>reply</code> で返して叩かせる。目的は「決まった案を壊させる」こと。このラウンドが一番効きます。</li>
+  <li>必要なら GPT に R3 で反証耐性（主要な反論と先回りの応答方針）。</li>
+  <li>ディレクターが決定メモを確定して本人へ。</li>
+</ol>
+<h3>台本段階（Gemini × ディレクター）</h3>
+<ol>
+  <li>ディレクターが章ごとにブリーフ（企画・語り手・章の位置・素材と順序・断定ライン・タグ形式・1行1文）。数値縛りは入れない。</li>
+  <li>Gemini が章本文を書く（<code>gemini_chat.py -f briefs/chN.md --system references/japanese_style.md</code>）。</li>
+  <li><code>qa_script.py</code> で検査 → FAIL は <code>ja_style_fix.py</code> で該当文だけ Gemini に直させる。</li>
+  <li>ディレクターが最終レビュー（企画とのズレ・フックの強さ・素材の位置・機械が消した対比の復元）。書き直しは Gemini に該当文だけ依頼する。</li>
+  <li><code>qa_script.py &lt;project&gt; --strict</code> が PASS したものだけ納品。修正したら取り直す。</li>
+</ol>
+<div class="tbl"><table>
+<tr><th>やりたいこと</th><th>誰に</th><th>コマンド</th></tr>
+<tr><td>企画案の科学的な言い過ぎを検出</td><td><span class="tag gpt">GPT</span></td><td><code>gpt_consult.py ask</code></td></tr>
+<tr><td>そのテーマの既出本数と反応を実測</td><td><span class="tag grok">Grok</span></td><td><code>grok_consult.py research --search both</code></td></tr>
+<tr><td>決定メモを壊させる</td><td><span class="tag gpt">GPT</span> <span class="tag grok">Grok</span></td><td><code>… reply -f decision_v1.md</code></td></tr>
+<tr><td>章本文を書く</td><td><span class="tag gemini">Gemini</span></td><td><code>gemini_chat.py -f briefs/chN.md --system references/japanese_style.md</code></td></tr>
+<tr><td>指摘された文だけ直す</td><td><span class="tag gemini">Gemini</span></td><td><code>ja_style_fix.py script.txt --strict</code></td></tr>
+<tr><td>企画の採否・タイトル・最終レビュー</td><td><span class="tag claude">ディレクター</span></td><td>チャットで判断</td></tr>
+</table></div>
+
+<h2 id="trouble"><span class="num">08</span>つまずきポイント</h2>
+<div class="tbl"><table>
+<tr><th>症状</th><th>原因</th><th>対処</th></tr>
+<tr><td><code>GEMINI_API_KEY が未設定です</code></td><td>環境変数も設定ファイルも無い</td><td>3-2 の方法1か2。Claude Code のセッションを開き直す</td></tr>
+<tr><td>Gemini が <code>429 prepayment credits are depleted</code></td><td>前払い残高が 0</td><td>AI Studio の Billing でチャージ</td></tr>
+<tr><td>Gemini が <code>404</code> でモデルが見つからない</td><td>モデル名の誤り</td><td><code>gemini_chat.py --list</code> で正しい名前を確認</td></tr>
+<tr><td><code>codex exec</code> が「Reading additional input from stdin」で止まる</td><td>プロンプトを引数で渡した</td><td>末尾に <code>-</code> を付けて標準入力から渡す</td></tr>
+<tr><td>Claude から codex ツールが「requires a newer version」</td><td>brew 更新後に古い mcp-server が居残り</td><td>Claude Code のセッションを再起動</td></tr>
+<tr><td>Grok が「以下に整理します」だけで終わる</td><td>reasoning high で推論が出力を食った</td><td><code>--reasoning medium</code>（既定）。スクリプトが自動で続きを書かせる</td></tr>
+<tr><td>Grok の入力が 20万トークン超で高額</td><td>R2 を <code>ask</code> で文脈貼り直し</td><td>R2 は必ず <code>reply</code></td></tr>
+<tr><td>Gemini の書き直しでタグが減った・増えた</td><td>章丸ごとの書き直し</td><td><code>ja_style_fix.py</code>（文単位）を使う。章書き直しならタグ列一致を検証してから採用</td></tr>
+<tr><td>Gemini の文が不自然に短い・「です。」連発</td><td>ブリーフに文長・語尾の数値縛り</td><td>数値縛りを外し、<code>--system</code> の文体ルールで寄せる</td></tr>
+<tr><td>スキルの <code>/</code> 一覧に出ない</td><td>配置先が違う・フォルダが入れ子・未再起動</td><td><code>~/.claude/skills/clbs-youtube-script-pro/SKILL.md</code> の位置を確認して Cmd+Q で完全再起動</td></tr>
+</table></div>
+
+<h2 id="setup-prompt"><span class="num">09</span>コピペ用セットアッププロンプト</h2>
+<p>Claude Code か Codex のチャットにそのまま貼ると、エージェントが環境を判定してスキルとスクリプトを配置し、接続確認まで行います。API キーの値だけは自分で置いてください（AI にキーを渡さない）。</p>
+<div class="prompt"><div class="lbl">Claude Code / Codex に貼る</div>
+<pre><code>次のスキルを導入し、他のAI（Gemini / GPT / Grok）との連携を確認してください。
+
+リポジトリ: https://github.com/conlab-clbs/clbs-youtube-script-pro
+
+【STEP 0 環境判定】自分が Claude Code か Codex か、OS が macOS か Windows(WSL) かを確認して報告。
+
+【STEP 1 配置】
+- Claude Code → ~/.claude/skills/clbs-youtube-script-pro/（直下に SKILL.md が来ること）
+- Codex → ~/.codex/skills/clbs-youtube-script-pro/
+- 既にあれば git pull。git が使えなければ ZIP（…/archive/refs/heads/main.zip）を展開して配置。
+
+【STEP 2 Gemini 接続確認】
+- python3 scripts/gemini_chat.py --list を実行。GEMINI_API_KEY 未設定なら、
+  「~/.config/clbs/config.toml に [gemini] api_key を書いてください」と私に案内して待つ
+  （キーの値を私に聞かない・チャットに貼らせない）。
+- 接続できたら python3 scripts/qa_script.py references/example_script_quantum_antenna.txt を実行し、
+  PASS を確認。
+
+【STEP 3 GPT（任意）】codex --version が通れば codex login status を確認。
+  Claude Code の場合は claude mcp add -s user codex -- codex mcp-server で MCP 登録。
+
+【STEP 4 Grok（任意）】XAI_API_KEY があれば python3 scripts/grok_consult.py --list を確認。
+
+【最後】3つとも「接続OK / 未設定（理由）」を表にして報告。
+  以後この環境では、台本の本文執筆と校正修正は Gemini に、企画の反論は GPT/Grok に振り、
+  企画の採否・タイトル・最終レビューはあなたが持つ、という役割で進めてください。</code></pre></div>
+
+<h3>同梱ファイル</h3>
+<div class="tbl"><table>
+<tr><th>ファイル</th><th>役割</th><th>必要なもの</th></tr>
+<tr><td><code>scripts/qa_script.py</code></td><td>日本語校正ゲート（禁止フレーズ・和訳調・タグ規約）。FAIL で exit 1</td><td>なし</td></tr>
+<tr><td><code>scripts/ja_style_fix.py</code></td><td>指摘された文だけ Gemini に直させて差し戻す</td><td>GEMINI_API_KEY</td></tr>
+<tr><td><code>scripts/gemini_chat.py</code></td><td>Gemini API 最小クライアント（執筆・言い換え）</td><td>GEMINI_API_KEY</td></tr>
+<tr><td><code>scripts/gpt_consult.py</code></td><td>GPT に企画相談（Codex CLI 経由・多ターン）</td><td>codex login</td></tr>
+<tr><td><code>scripts/grok_consult.py</code></td><td>Grok に相談・X/Web 実測リサーチ</td><td>XAI_API_KEY</td></tr>
+<tr><td><code>references/japanese_style.md</code></td><td>日本語表現ルール（Gemini の --system にも使う）</td><td>—</td></tr>
+<tr><td><code>references/multi_ai_collaboration.md</code></td><td>この資料の要点版（スキルが参照する）</td><td>—</td></tr>
+</table></div>
+
+<footer>AI×超集客法 ワークショップ配布資料 · clbs-youtube-script-pro v2.0 · 2026-09-17。スクリプトは MIT ライセンス。各AIの料金・モデル名は変わるので、公式の料金表で最新を確認してください。</footer>
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('pre').forEach(function(pre){
+    var btn=document.createElement('button');btn.className='copy';btn.type='button';btn.textContent='COPY';btn.setAttribute('aria-label','コードをコピー');
+    btn.addEventListener('click',function(){
+      var code=pre.querySelector('code');var text=(code?code.innerText:pre.innerText).replace(/\n?COPY$/,'');
+      try{navigator.clipboard.writeText(text).then(function(){btn.textContent='COPIED';setTimeout(function(){btn.textContent='COPY';},1200);});}
+      catch(e){btn.textContent='—';}
+    });
+    pre.appendChild(btn);
+  });
+})();
+</script>
