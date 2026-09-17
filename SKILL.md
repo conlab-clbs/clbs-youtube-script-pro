@@ -50,7 +50,7 @@ YouTubeアルゴリズムに沿って「視聴者が思わずクリックし、�
 
 ## フェーズ1：軽量リサーチ（任意・WebSearch内蔵）
 
-毎日リサーチ（`docs/daily_research_prompt.md` のテンプレートで定期生成した `daily_YYYY-MM-DD.md`）があるなら、まずそれを読み、TOP5 とネタ5本を企画3案の素材にする。
+毎日リサーチのレポート（`daily_YYYY-MM-DD.md`）があるなら、まずそれを読み、TOP5 とネタ5本を企画3案の素材にする。ユーザーから「毎日リサーチを設定して」「ネタ集めを自動化したい」と頼まれたら `docs/AI_RESEARCH_SETUP_GUIDE.md` の手順で専用スキルを生成する（`scripts/make_research_skill.py`）。
 
 競合URLやジャンルが分かる場合のみ実行。重い分析はせず要点だけ掴む。本格的な異常値分析・バズ方程式モデリングが必要なら別スキル `clbs-youtube-research` を案内する。
 

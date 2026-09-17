@@ -8,6 +8,7 @@
 | `ja_style_fix.py <script.txt> [--all] [--strict] [--dry-run]` | qa_script が拾った文だけを Gemini 3.8 Flash に直させ、元の位置に戻す（タグ・break不変、`.bak_日時` に退避、修正後に再検査） | `GEMINI_API_KEY` |
 | `gemini_chat.py [-m gemini-3.8-flash] -p "…" \| -f prompt.md [--system rules.md] [-o out.txt] [--json] [--list]` | Gemini API 最小クライアント。本文執筆や言い換えを Gemini に振るときの土台 | `GEMINI_API_KEY` |
 | `gpt_consult.py ask\|reply --out <dir> --name <topic> -f prompt.md [--model gpt-6-astra] [--effort medium\|high]` | GPT に企画相談（Codex CLI 経由・ChatGPTサブスク枠、API課金なし）。`reply` で同じセッションを継続 | `codex login` 済み |
+| `make_research_skill.py --channel … --slug … --genre … --target … --style search\|browse\|both --themes … --kw-ja … --out-dir … [--codex] [--force]` | 受講生のジャンル専用「毎日リサーチ」スキル（SKILL.md ＋ Cowork 用 research_prompt.md）を `assets/daily_research_skill_template.md` から生成。AI が `docs/AI_RESEARCH_SETUP_GUIDE.md` の手順で呼ぶ | なし |
 | `grok_consult.py ask\|reply\|research --out <dir> --name <topic> -f prompt.md [--search x\|web\|both] [--from-date …]` | Grok に企画相談・X/Web実測リサーチ（引用URL付き）。`--reasoning medium` 既定 | `XAI_API_KEY` |
 
 ## キーの置き場所

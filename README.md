@@ -69,6 +69,21 @@ URLを開けない場合は、先に
 
 AIが従う手順書は [`docs/AI_SETUP_GUIDE.md`](docs/AI_SETUP_GUIDE.md) です。
 
+### 毎日リサーチの初期設定（受講生向け・AIに代行させる）
+
+台本の前段になる「毎日リサーチ」も、ジャンルを答えるだけで AI が専用スキルを作り、初回レポートまで作ります。上のセットアップが終わったあとに貼ってください。
+
+```
+次のAIエージェント向けガイドを読み、書かれている手順どおりに、私のジャンル専用の「毎日リサーチ」を初期設定してください。
+https://raw.githubusercontent.com/conlab-clbs/clbs-youtube-script-pro/main/docs/AI_RESEARCH_SETUP_GUIDE.md
+（URLを開けない場合は ~/.claude/skills/clbs-youtube-script-pro/docs/AI_RESEARCH_SETUP_GUIDE.md を読んでください。Codex は ~/.codex/skills/…）
+
+質問は1回に1つずつお願いします。検索語や情報源は私には思いつけないので、あなたが候補を作って確認してください。
+ファイル作成・実行はあなたがやり、初回のレポートを1本作って見せてから、毎日回す方法を教えてください。
+```
+
+AIが従う手順書は [`docs/AI_RESEARCH_SETUP_GUIDE.md`](docs/AI_RESEARCH_SETUP_GUIDE.md)、生成に使うスクリプトは `scripts/make_research_skill.py`（テンプレート `assets/daily_research_skill_template.md`）です。
+
 ### インストール（自分で行う場合）
 
 ```bash
@@ -95,7 +110,7 @@ Claude Code でこのスキルを入れた状態で「YouTube企画考えて」�
 `references/` に教材一式があります：
 - `japanese_style.md` — **日本語表現ルール**（禁止フレーズ／和訳調7原則／演出比喩／直すときの原則）
 - `multi_ai_collaboration.md` — Gemini・GPT・Grok を Claude Code / Codex に参加させる考え方と手順
-- `docs/daily_research_prompt.md` — **毎日リサーチ＋ネタ出しタスクのテンプレート**（自分のジャンルに書き換えて Cowork / Claude Code の定期実行に貼る。台本の前段）
+- `docs/daily_research_prompt.md` — 毎日リサーチ＋ネタ出しタスクの手書き用テンプレート（AI代行なら `docs/AI_RESEARCH_SETUP_GUIDE.md` の方を使う）
 - `example_kikaku_quantum_antenna.md` — 企画書サンプル（どの常識破壊フレーム・審査項目で設計したかの解説）
 - `example_script_quantum_antenna.txt` — 完成台本（編集スキルの練習素材と同じ）
 - `example_heygen_script.txt` / `example_media_list.yaml`
@@ -132,6 +147,8 @@ clbs-youtube-script-pro（企画考案＋台本＋日本語校正）→ HeyGen�
 
 ## 更新履歴
 
+- **v2.2（2026-09-17）** 毎日リサーチの初期設定をAI代行化（`docs/AI_RESEARCH_SETUP_GUIDE.md`・`scripts/make_research_skill.py`・`assets/daily_research_skill_template.md`）。
+- **v2.1（2026-09-17）** セットアップをAI代行化（`docs/AI_SETUP_GUIDE.md`）。
 - **v2.0（2026-09-17）** 日本語校正ゲート（`scripts/qa_script.py`）・Gemini 修正パス（`scripts/ja_style_fix.py`）・日本語表現ルール（`references/japanese_style.md`）・GPT/Grok 相談スクリプト・他AI連携マニュアルを追加。承認ゲートを企画選択と構成承認の2箇所に整理。冒頭30秒を4点セットに更新。
 - **v1.0（2026-06）** 初版（企画考案〜台本〜素材台帳）。
 

@@ -109,7 +109,7 @@ footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--line);font-si
   <div class="meta">
     <span>対象: Claude Code（デスクトップ/CLI）・OpenAI Codex CLI</span>
     <span>OS: macOS / Windows（WSL2推奨）</span>
-    <span>更新: 2026-09-17（v2.1 AI代行方式）</span>
+    <span>更新: 2026-09-17（v2.2 リサーチ初期設定もAI代行）</span>
     <span>同梱スクリプト: <a href="https://github.com/conlab-clbs/clbs-youtube-script-pro">clbs-youtube-script-pro</a> の <code>scripts/</code></span>
   </div>
 </header>
@@ -146,6 +146,15 @@ URLを開けない場合は、先に
 私にしかできない操作（ブラウザでのキー発行・ログイン・アプリの再起動）だけを、
 1回に1つずつ、何をどこでやればいいか具体的に教えてください。
 私が「終わった」と言ったら確認してから次に進んでください。キーの値はチャットに貼らせないでください。</code></pre></div>
+<h3>台本の前の「毎日リサーチ」も、AIに初期設定させる</h3>
+<p>環境ができたら、次のプロンプトを貼ります。AIがジャンルを1問ずつ聞き、あなた専用のリサーチスキル（毎朝の TOP5・動画ネタ5本・X投稿5本）を作って、初回レポートまで作ります。API キーは不要です。</p>
+<div class="prompt"><div class="lbl">環境セットアップのあとに貼る</div>
+<pre><code>次のAIエージェント向けガイドを読み、書かれている手順どおりに、私のジャンル専用の「毎日リサーチ」を初期設定してください。
+https://raw.githubusercontent.com/conlab-clbs/clbs-youtube-script-pro/main/docs/AI_RESEARCH_SETUP_GUIDE.md
+（URLを開けない場合は ~/.claude/skills/clbs-youtube-script-pro/docs/AI_RESEARCH_SETUP_GUIDE.md を読んでください。Codex は ~/.codex/skills/…）
+
+質問は1回に1つずつお願いします。検索語や情報源は私には思いつけないので、あなたが候補を作って確認してください。
+ファイル作成・実行はあなたがやり、初回のレポートを1本作って見せてから、毎日回す方法を教えてください。</code></pre></div>
 <h3>あなたに頼まれる操作は最大4つ</h3>
 <div class="tbl"><table>
 <tr><th>お願い</th><th>どこで</th><th>必須？</th></tr>
@@ -408,6 +417,7 @@ cat draft/script.txt | claude -p "この台本を、企画意図とのズレ・�
   <li><b>エラーは自分で読んで直す。</b> 3回で解決しなければ症状と試したことを3行で報告する。</li>
   <li><b>進捗は各ステップの終わりに1行</b>（「✅ STEP n 完了 ／ 次: 〜」）。最後に、スキル配置・Gemini・GPT・Grok・役割分担ファイルの5行の表を出す。</li>
   <li><b>順序:</b> 環境判定 → スキル配置 → Gemini（必須）→ GPT（任意）→ Grok（任意）→ 役割分担を <code>CLAUDE.md</code> / <code>AGENTS.md</code> に書く → Claude Code なら再起動を最後に1回だけ依頼。</li>
+  <li><b>毎日リサーチの初期設定を頼まれたら</b> <code>docs/AI_RESEARCH_SETUP_GUIDE.md</code> に従う（1問ずつのヒアリング → <code>scripts/make_research_skill.py</code> で専用スキル生成 → 初回レポートを1本作って見せる → 毎日回す方法を1つ案内）。</li>
 </ol>
 <p>設定が終わったあとの運用ルールは、このスキルの <code>SKILL.md</code> フェーズ7 と <code>references/multi_ai_collaboration.md</code> にある。本文は Gemini に書かせ、企画の採否・タイトル・最終レビューはあなたが持つ。</p>
 
@@ -422,6 +432,7 @@ cat draft/script.txt | claude -p "この台本を、企画意図とのズレ・�
 <tr><td><code>references/japanese_style.md</code></td><td>日本語表現ルール（Gemini の --system にも使う）</td><td>—</td></tr>
 <tr><td><code>references/multi_ai_collaboration.md</code></td><td>この資料の要点版（スキルが参照する）</td><td>—</td></tr>
 <tr><td><code>docs/AI_SETUP_GUIDE.md</code></td><td>AIエージェントがセットアップを代行するための手順書（受講生は00章のプロンプトを貼るだけ）</td><td>—</td></tr>
+<tr><td><code>docs/AI_RESEARCH_SETUP_GUIDE.md</code> / <code>scripts/make_research_skill.py</code></td><td>ジャンル専用の「毎日リサーチ」スキルをAIが生成して初回実行まで代行する手順書と生成スクリプト</td><td>—</td></tr>
 </table></div>
 
 <footer>AI×超集客法 ワークショップ配布資料 · clbs-youtube-script-pro v2.0 · 2026-09-17。スクリプトは MIT ライセンス。各AIの料金・モデル名は変わるので、公式の料金表で最新を確認してください。</footer>
